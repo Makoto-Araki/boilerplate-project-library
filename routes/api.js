@@ -1,28 +1,65 @@
 /*
-*
-*
-*       Complete the API routing below
-*       
-*       
-*/
+ *
+ *
+ *       Complete the API routing below
+ *       
+ *       
+ */
 
 'use strict';
 
-module.exports = function (app) {
+// Import
+const mongoose = require('mongoose');
 
+// Schema
+const bookSchema = new mongoose.Schema({
+  title: String,
+  count: Number,
+  comments: [String],
+});
+
+// Model
+const Book = new mongoose.model('Book', bookSchema);
+
+module.exports = function (app) {
   app.route('/api/books')
+
+    // GET - URL/api/books
     .get(function (req, res){
       //response will be array of book objects
-      //json res format: [{"_id": bookid, "title": book_title, "commentcount": num_of_comments },...]
+      //json res format:
+      // [{"_id": bookid, "title": book_title, "commentcount": num_of_comments },...]
     })
-    
+
+    // POST - URL/api/books
     .post(function (req, res){
       let title = req.body.title;
-      //response will contain new book object including atleast _id and title
+      let entry = new Book();
+      entry.title = title;
+      entry.save((err, doc) => {
+        if (!err) {
+          return res.json({
+            _id: doc._id,
+            title: title,
+          });
+        } else {
+          console.error(err);
+        }
+      });
     })
-    
+
+    // DELETE - URL/api/books
     .delete(function(req, res){
-      //if successful response will be 'complete delete successful'
+      Book.deleteMany(
+        {},
+        (err, doc) => {
+          if (!err) {
+            return res.send('complete delete successful');
+          } else {
+            console.error(err);
+          }
+        }
+      );
     });
 
 
