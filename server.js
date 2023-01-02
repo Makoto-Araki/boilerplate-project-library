@@ -21,17 +21,7 @@ app.use(cors({origin: '*'})); //USED FOR FCC TESTING PURPOSES ONLY!
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Secrets
-// const user = process.env['user']
-// const pass = process.env['pass']
-// const cluster = process.env['cluster']
-// const option = process.env['option']
-// const database = process.env['database']
-
-// Mongo_URI (old)
-// const mongo_URI = `mongodb+srv://${user}:${pass}@${cluster}/${database}?${option}`;
-
-// Mongo_URI
+// Mongo_URI (old version was cleared)
 const mongo_URI = process.env['DB'];
 
 // MongoDB Connect Config
