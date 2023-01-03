@@ -14,7 +14,6 @@ const mongoose = require('mongoose');
 // Schema
 const bookSchema = new mongoose.Schema({
   title: String,
-  count: Number,
   comments: [String],
 });
 
@@ -62,18 +61,48 @@ module.exports = function (app) {
       );
     });
 
-
-
   app.route('/api/books/:id')
     .get(function (req, res){
       let bookid = req.params.id;
       //json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
     })
-    
+
+    // POST - URL/api/books/:id
     .post(function(req, res){
+
+      // Hold value
       let bookid = req.params.id;
       let comment = req.body.comment;
-      //json res format same as .get
+
+      // Required field check
+      if (comment === '') {
+        return res.send('missing required field comment');
+      }
+
+      // Comment is inserted
+      Book.findOneAndUpdate(
+        { _id: { $eq: bookid } },
+        { $push: { comments: comment } },
+        { upsert: false, new: true},
+        (err, doc) => {
+          if (!err) {
+            if (doc !== null) {
+              console.log('AAA : ' + doc.comments.length);
+              return res.json({
+                comments: doc.comments,
+                _id: doc._id,
+                title: doc.title,
+                commentcount: doc.comments.length,
+                __v: doc.__v,
+              });
+            } else {
+              return res.send('no book exists');
+            }
+          } else {
+            console.error(err);
+          }
+        }
+      );
     })
     
     .delete(function(req, res){
