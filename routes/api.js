@@ -58,7 +58,7 @@ module.exports = function (app) {
       let entry = new Book();
 
       // Required field check
-      if (title === '') {
+      if (!req.body.hasOwnProperty('title')) {
         return res.send('missing required field title');
       }
 
@@ -133,7 +133,7 @@ module.exports = function (app) {
       Book.findOneAndUpdate(
         { _id: { $eq: bookid } },
         { $push: { comments: comment } },
-        { upsert: false, new: true},
+        { upsert: false, new: true },
         (err, doc) => {
           if (!err) {
             if (doc !== null) {
