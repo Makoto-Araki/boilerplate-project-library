@@ -103,7 +103,7 @@ module.exports = function (app) {
         if (!err) {
           if (doc !== null) {
 
-            // Create return object for json
+            // Create and return object for json
             let myobject = {};
             myobject.comments = doc.comments;
             myobject._id = doc._id;
