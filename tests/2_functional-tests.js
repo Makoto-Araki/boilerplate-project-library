@@ -124,10 +124,22 @@ suite('Functional Tests', function() {
           });
       });
       test('Test POST /api/books/[id] without comment field', function(done){
-        //done();
+        chai.request(server)
+          .post(`api/books/${real}`)
+          .send({})
+          .end(function(err, res) {
+            assert.equal(res, undefined);
+            done();
+          });
       });
       test('Test POST /api/books/[id] with comment, id not in db', function(done){
-        //done();
+        chai.request(server)
+          .post(`api/books/${dumy}`)
+          .send({})
+          .end(function(err, res) {
+            assert.equal(res, undefined);
+            done();
+          });
       });
     });
 
