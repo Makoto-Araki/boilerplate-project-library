@@ -145,10 +145,22 @@ suite('Functional Tests', function() {
 
     suite('DELETE /api/books/[id] => delete book object id', function() {
       test('Test DELETE /api/books/[id] with valid id in db', function(done){
-        //done();
+        chai.request(server)
+          .delete(`api/books/${real}`)
+          .send({})
+          .end(function(err, res) {
+            assert.equal(res, undefined);
+            done();
+          });
       });
       test('Test DELETE /api/books/[id] with  id not in db', function(done){
-        //done();
+        chai.request(server)
+          .delete(`api/books/${dumy}`)
+          .send({})
+          .end(function(err, res) {
+            assert.equal(res, undefined);
+            done();
+          });
       });
     });
   
