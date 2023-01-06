@@ -98,19 +98,23 @@ module.exports = function (app) {
     .get(function (req, res){
       let bookid = req.params.id;
       Book
-      .find({ _id: bookid })
+      .findById(bookid) //.find({ _id: bookid })
       .exec((err, doc) => {
         if (!err) {
-          let myobject = {};
+          if (doc !== null) {
 
-          // Create object for json
-          myobject.comments = doc[0].comments;
-          myobject._id = doc[0]._id;
-          myobject.title = doc[0].title;
-          myobject.commentcount = doc[0].comments.length;
-          myobject.__v = doc[0].__v;
-          
-          return res.json(myobject);
+            // Create return object for json
+            let myobject = {};
+            myobject.comments = doc.comments;
+            myobject._id = doc._id;
+            myobject.title = doc.title;
+            myobject.commentcount = doc.comments.length;
+            myobject.__v = doc.__v;
+            return res.json(myobject);
+            
+          } else {
+            return res.send('no book exists');
+          }
         } else {
           console.error(err);
         }
@@ -125,7 +129,7 @@ module.exports = function (app) {
       let comment = req.body.comment;
 
       // Required field check
-      if (comment === '') {
+      if (!req.body.hasOwnProperty('comment')) {
         return res.send('missing required field comment');
       }
 
