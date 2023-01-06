@@ -112,8 +112,16 @@ suite('Functional Tests', function() {
       test('Test POST /api/books/[id] with comment', function(done){
         chai.request(server)
           .post(`api/books/${real}`)
-          .send({})
-        //done();
+          .send({ comment: 'AAA comment1' })
+          .end(function(err, res) {
+            assert.equal(res.status, 200);
+            assert.equal(res.type, 'application/json');
+            assert.equal(res.body.comments[0], 'AAA comment1');
+            assert.equal(res.body._id, real);
+            assert.equal(res.body.title, 'AAA');
+            assert.equal(res.body.commentcount, 1);
+            done();
+          });
       });
       test('Test POST /api/books/[id] without comment field', function(done){
         //done();
