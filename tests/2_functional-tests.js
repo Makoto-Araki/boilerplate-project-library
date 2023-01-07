@@ -36,26 +36,16 @@ suite('Functional Tests', function() {
   /* ---------------------------------------------------------------------- */
 
   // Hold id for evaluation
-  let dumy = 'AAAABBBBCCCCDDDDEEEEFFFF';
+  let dumy = 'aaaaBBBBccccDDDDeeeeFFFF';
   let real;
   
   suite('Routing tests', function() {
     suite('POST /api/books with title => create book object/expect book object', function() {
       test('Test POST /api/books with title', function(done) {
         chai.request(server)
-          .post('api/books')
-          .set('title', 'AAA')
+          .post('/api/books')
+          .send({title: 'AAA'})
           .end(function(err, res) {
-
-            // For Debug
-            console.log('DEBUG');
-            if (!err) {
-              console.log('AAA');
-              console.dir(res);
-            } else {
-              console.log('BBB');
-              console.dir(err);
-            }
 
             // Hold value
             real = res.body._id;
@@ -71,10 +61,12 @@ suite('Functional Tests', function() {
       });
       test('Test POST /api/books with no title given', function(done) {
         chai.request(server)
-          .post('api/books')
-          .query({})
+          .post('/api/books')
+          .send({})
           .end(function(err, res) {
-            assert.equal(res, undefined);
+            assert.equal(res.status, 200);
+            assert.equal(res.type, 'text/html');
+            assert.equal(res.text, 'missing required field title');
             done();
           });
       });
@@ -86,7 +78,8 @@ suite('Functional Tests', function() {
           .get('/api/books')
           .end(function(err, res){
             assert.equal(res.status, 200);
-            assert.equal(res.body[0].comments, []);
+            assert.equal(res.type, 'application/json');
+            assert.equal(res.body[0].comments.length, 0);
             assert.equal(res.body[0]._id, real);
             assert.equal(res.body[0].title, 'AAA');
             assert.equal(res.body[0].commentcount, 0);
@@ -98,21 +91,24 @@ suite('Functional Tests', function() {
     suite('GET /api/books/[id] => book object with [id]', function(){
       test('Test GET /api/books/[id] with id not in db',  function(done){
         chai.request(server)
-          .get(`api/books/${dumy}`)
+          .get(`/api/books/${dumy}`)
           .end(function(err, res) {
-            assert.equal(res, undefined);
+            assert.equal(res.status, 200);
+            assert.equal(res.type, 'text/html');
+            assert.equal(res.text, 'no book exists');
             done();
           });
       });
       test('Test GET /api/books/[id] with valid id in db',  function(done){
         chai.request(server)
-          .get(`api/books/${real}`)
+          .get(`/api/books/${real}`)
           .end(function(err, res) {
             assert.equal(res.status, 200);
-            assert.equal(res.body[0].comments, []);
-            assert.equal(res.body[0]._id, real);
-            assert.equal(res.body[0].title, 'AAA');
-            assert.equal(res.body[0].commentcount, 0);
+            assert.equal(res.type, 'application/json');
+            assert.equal(res.body.comments.length, 0);
+            assert.equal(res.body._id, real);
+            assert.equal(res.body.title, 'AAA');
+            assert.equal(res.body.commentcount, 0);
             done();
           });
       });
@@ -121,7 +117,7 @@ suite('Functional Tests', function() {
     suite('POST /api/books/[id] => add comment/expect book object with id', function(){
       test('Test POST /api/books/[id] with comment', function(done){
         chai.request(server)
-          .post(`api/books/${real}`)
+          .post(`/api/books/${real}`)
           .send({ comment: 'AAA comment1' })
           .end(function(err, res) {
             assert.equal(res.status, 200);
@@ -135,19 +131,23 @@ suite('Functional Tests', function() {
       });
       test('Test POST /api/books/[id] without comment field', function(done){
         chai.request(server)
-          .post(`api/books/${real}`)
+          .post(`/api/books/${real}`)
           .send({})
           .end(function(err, res) {
-            assert.equal(res, undefined);
+            assert.equal(res.status, 200);
+            assert.equal(res.type, 'text/html');
+            assert.equal(res.text, 'missing required field comment');
             done();
           });
       });
       test('Test POST /api/books/[id] with comment, id not in db', function(done){
         chai.request(server)
-          .post(`api/books/${dumy}`)
-          .send({})
+          .post(`/api/books/${dumy}`)
+          .send({ comment: 'AAA comment2' })
           .end(function(err, res) {
-            assert.equal(res, undefined);
+            assert.equal(res.status, 200);
+            assert.equal(res.type, 'text/html');
+            assert.equal(res.text, 'no book exists');
             done();
           });
       });
@@ -156,25 +156,28 @@ suite('Functional Tests', function() {
     suite('DELETE /api/books/[id] => delete book object id', function() {
       test('Test DELETE /api/books/[id] with valid id in db', function(done){
         chai.request(server)
-          .delete(`api/books/${real}`)
+          .delete(`/api/books/${real}`)
           .send({})
           .end(function(err, res) {
-            assert.equal(res, undefined);
+            assert.equal(res.status, 200);
+            assert.equal(res.type, 'text/html');
+            assert.equal(res.text, 'delete successful');
             done();
           });
       });
       test('Test DELETE /api/books/[id] with  id not in db', function(done){
         chai.request(server)
-          .delete(`api/books/${dumy}`)
+          .delete(`/api/books/${dumy}`)
           .send({})
           .end(function(err, res) {
-            assert.equal(res, undefined);
+            assert.equal(res.status, 200);
+            assert.equal(res.type, 'text/html');
+            assert.equal(res.text, 'no book exists');
             done();
           });
       });
     });
+  });
   
   /* ---------------------------------------------------------------------- */  
-  
-  });
 });
