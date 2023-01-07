@@ -22,6 +22,7 @@ const Book = new mongoose.model('Book', bookSchema);
 
 module.exports = function (app) {
 
+  // API point - URL/api/books
   app.route('/api/books')
 
     // GET - URL/api/books
@@ -62,7 +63,7 @@ module.exports = function (app) {
       let title = req.body.title;
       let entry = new Book();
 
-      // Title is inserted
+      // Document is saved
       entry.title = title;
       entry.save((err, doc) => {
         if (!err) {
@@ -91,27 +92,28 @@ module.exports = function (app) {
     });
 
   /* ---------------------------------------------------------------------- */
-  
+
+  // API point - URL/api/books/:id
   app.route('/api/books/:id')
 
     // GET - URL/api/books/:id
     .get(function (req, res){
       let bookid = req.params.id;
       Book
-      .findById(bookid) //.find({ _id: bookid })
+      .findById(bookid)
       .exec((err, doc) => {
         if (!err) {
           if (doc !== null) {
 
-            // Create and return object for json
+            // Create object for json
             let myobject = {};
             myobject.comments = doc.comments;
             myobject._id = doc._id;
             myobject.title = doc.title;
             myobject.commentcount = doc.comments.length;
             myobject.__v = doc.__v;
-            return res.json(myobject);
             
+            return res.json(myobject);
           } else {
             return res.send('no book exists');
           }
