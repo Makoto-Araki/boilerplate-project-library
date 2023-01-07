@@ -53,14 +53,14 @@ module.exports = function (app) {
     // POST - URL/api/books
     .post(function (req, res){
 
-      // Hold value
-      let title = req.body.title;
-      let entry = new Book();
-
       // Required field check
       if (!req.body.hasOwnProperty('title')) {
         return res.send('missing required field title');
       }
+
+      // Hold value
+      let title = req.body.title;
+      let entry = new Book();
 
       // Title is inserted
       entry.title = title;
@@ -124,14 +124,14 @@ module.exports = function (app) {
     // POST - URL/api/books/:id
     .post(function(req, res){
 
-      // Hold value
-      let bookid = req.params.id;
-      let comment = req.body.comment;
-
       // Required field check
       if (!req.body.hasOwnProperty('comment')) {
         return res.send('missing required field comment');
       }
+
+      // Hold value
+      let bookid = req.params.id;
+      let comment = req.body.comment;
 
       // Comment is inserted
       Book.findOneAndUpdate(

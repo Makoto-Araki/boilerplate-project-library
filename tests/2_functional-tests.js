@@ -33,7 +33,7 @@ suite('Functional Tests', function() {
   * ----[END of EXAMPLE TEST]----
   */
 
-  /* ---------------------------------------------------------------------- 
+  /* ---------------------------------------------------------------------- */
 
   // Hold id for evaluation
   let dumy = 'AAAABBBBCCCCDDDDEEEEFFFF';
@@ -44,8 +44,18 @@ suite('Functional Tests', function() {
       test('Test POST /api/books with title', function(done) {
         chai.request(server)
           .post('api/books')
-          .send({ title: 'AAA' })
+          .set('title', 'AAA')
           .end(function(err, res) {
+
+            // For Debug
+            console.log('DEBUG');
+            if (!err) {
+              console.log('AAA');
+              console.dir(res);
+            } else {
+              console.log('BBB');
+              console.dir(err);
+            }
 
             // Hold value
             real = res.body._id;
@@ -62,7 +72,7 @@ suite('Functional Tests', function() {
       test('Test POST /api/books with no title given', function(done) {
         chai.request(server)
           .post('api/books')
-          .send({})
+          .query({})
           .end(function(err, res) {
             assert.equal(res, undefined);
             done();
@@ -88,7 +98,7 @@ suite('Functional Tests', function() {
     suite('GET /api/books/[id] => book object with [id]', function(){
       test('Test GET /api/books/[id] with id not in db',  function(done){
         chai.request(server)
-          .get(`api/books/${dumy}``)
+          .get(`api/books/${dumy}`)
           .end(function(err, res) {
             assert.equal(res, undefined);
             done();
@@ -166,5 +176,5 @@ suite('Functional Tests', function() {
   
   /* ---------------------------------------------------------------------- */  
   
-  
+  });
 });
