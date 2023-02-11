@@ -69,7 +69,7 @@ module.exports = function (app) {
         if (!err) {
           return res.json({
             _id: doc._id,
-            title: title,
+            title: title
           });
         } else {
           console.error(err);
@@ -150,7 +150,7 @@ module.exports = function (app) {
                 _id: doc._id,
                 title: doc.title,
                 commentcount: doc.comments.length,
-                __v: doc.__v,
+                __v: doc.__v
               });
               
             } else {
